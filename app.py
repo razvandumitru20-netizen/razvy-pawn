@@ -33,7 +33,7 @@ def display():
 @app.route("/prices")
 def prices():
     cfg = load_config()
-    discount = cfg["discount"]
+    discount = cfg["discount_percent"] / 100
 
     eur = get_gold_price()
     ron = get_eur_ron()
