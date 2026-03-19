@@ -72,7 +72,7 @@ def prices():
 
 @app.route("/debug-kitco")
 def debug_kitco():
-    url = "url = "https://www.kitco.com""
+    url = "https://www.kitco.com"
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
