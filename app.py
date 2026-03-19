@@ -52,12 +52,11 @@ def display():
 @app.route("/prices")
 def prices():
     cfg = load_config()
-    discount = cfg["discount_percent"] / 100
 
-    usd_per_gram = get_gold_price()
-    usd_ron = get_usd_ron()
+usd_per_gram = get_gold_price()
+usd_ron = get_usd_ron()
 
-   base = usd_per_gram * usd_ron
+base = usd_per_gram * usd_ron
 
 return jsonify({
     "24K": round(base * (1 - 0.22), 2),
@@ -65,7 +64,6 @@ return jsonify({
     "14K": round(base * 0.585 * (1 - 0.18), 2),
     "8K": round(base * 0.333 * (1 - 0.28), 2)
 })
-
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
