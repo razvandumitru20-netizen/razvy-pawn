@@ -57,15 +57,14 @@ def prices():
     usd_per_gram = get_gold_price()
     usd_ron = get_usd_ron()
 
-    base = usd_per_gram * usd_ron
-    final = base * (1 - discount)
+   base = usd_per_gram * usd_ron
 
-    return jsonify({
-        "24K": round(final, 2),
-        "18K": round(final * 0.75, 2),
-        "14K": round(final * 0.585, 2),
-        "8K": round(final * 0.333, 2)
-    })
+return jsonify({
+    "24K": round(base * (1 - 0.22), 2),
+    "18K": round(base * 0.75 * (1 - 0.22), 2),
+    "14K": round(base * 0.585 * (1 - 0.18), 2),
+    "8K": round(base * 0.333 * (1 - 0.28), 2)
+})
 
 
 @app.route("/admin", methods=["GET", "POST"])
