@@ -17,7 +17,7 @@ def save_config(cfg):
 def get_gold_price():
     url = "https://api.metals.live/v1/spot/gold"
     data = requests.get(url).json()
-    price_usd_per_ounce = data[0]['price']
+    price_usd_per_ounce = data['price']
     usd_to_eur = 0.92
     return (price_usd_per_ounce * usd_to_eur) / 31.1035
 
