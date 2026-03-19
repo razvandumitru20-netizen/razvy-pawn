@@ -1,52 +1,63 @@
 from flask import Flask, render_template, request, redirect, jsonify
-import requests, json, os
+import requests
+import json
+import os
 import xml.etree.ElementTree as ET
-from bs4 import BeautifulSoup
+
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    return render_template("display.html")
+
 def load_config():
     with open("config.json") as f:
         return json.load(f)
+
 
 def save_config(cfg):
     with open("config.json", "w") as f:
         json.dump(cfg, f)
 
+
 def get_gold_price():
     url = "https://api.gold-api.com/price/XAU"
-    response = requests.get(url)
+    response = requests.get(url, timeout=15)
     data = response.json()
 
-    price_per_ounce = data["price"]  # USD per ounce
-    price_per_gram = price_per_ounce / 31.1035
+    price_per_ounce_usd = data["price"]
+    price_per_gram_usd = price_per_ounce_usd / 31.1035
+    return price_per_gram_usd
 
-    return price_per_gram
+
 def get_usd_ron():
     url = "https://www.bnr.ro/nbrfxrates.xml"
-    response = requests.get(url)
+    response = requests.get(url, timeout=15)
     root = ET.fromstring(response.content)
 
-    for rate in root.findall(".//Rate"):
-        if rate.attrib.get("currency") == "USD":
+    for rate in root.iter():
+        if rate.tag.endswith("Rate") and rate.attrib.get("currency") == "USD":
             return float(rate.text)
 
-    raise Exception("Nu am găsit USD/RON")
+    raise Exception("Nu am găsit USD/RON în XML-ul BNR")
+
+
+@app.route("/")
+def home():
+    return render_template("display.html")
+
+
 @app.route("/display")
 def display():
     return render_template("display.html")
+
 
 @app.route("/prices")
 def prices():
     cfg = load_config()
     discount = cfg["discount_percent"] / 100
 
-    usd = get_gold_price()
-    ron = get_usd_ron()
+    usd_per_gram = get_gold_price()
+    usd_ron = get_usd_ron()
 
-    base = eur * ron
+    base = usd_per_gram * usd_ron
     final = base * (1 - discount)
 
     return jsonify({
@@ -56,13 +67,19 @@ def prices():
         "8K": round(final * 0.333, 2)
     })
 
-@app.route("/debug-kitco")
-def debug_kitco():
-    url = "https://www.kitco.com"
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
 
-    response = requests.get(url, headers=headers, timeout=15)
+@app.route("/admin", methods=["GET", "POST"])
+def admin():
+    cfg = load_config()
 
-    return response.text[:5000]
+    if request.method == "POST":
+        if request.form["password"] == cfg["password"]:
+            cfg["discount_percent"] = float(request.form["discount"])
+            save_config(cfg)
+        return redirect("/admin")
+
+    return render_template("admin.html", discount=cfg["discount_percent"])
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
