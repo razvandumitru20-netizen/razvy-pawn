@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Razvy Pawn</title>
+<style>
+body {
+    margin: 0;
+    background: #0b3d2e;
+    color: gold;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+.logo img {
+    width: 220px;
+    margin-top: 20px;
+}
+.title {
+    color: white;
+    font-size: 60px;
+    margin: 20px 0;
+}
+.prices {
+    font-size: 110px;
+    font-weight: bold;
+}
+.row {
+    margin: 30px 0;
+}
+</style>
+</head>
+<body>
+<div class="logo">
+    <img src="/static/logo.png" alt="Razvy Pawn">
+</div>
+<div class="title">PREȚ AUR AZI</div>
+<div class="prices" id="prices"></div>
+
+<script>
+async function loadPrices() {
+    const res = await fetch("/prices");
+    const data = await res.json();
+
+    let html = "";
+    for (let k in data) {
+        html += `<div class="row">${k} ${data[k]} RON</div>`;
+    }
+
+    document.getElementById("prices").innerHTML = html;
+}
+
+loadPrices();
+setInterval(loadPrices, 600000);
+</script>
+</body>
+</html>
