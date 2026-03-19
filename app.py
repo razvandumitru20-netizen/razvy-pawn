@@ -3,6 +3,9 @@ import requests, json, os
 
 app = Flask(__name__)
 
+@app.route("/")
+def home():
+    return render_template("display.html")
 def load_config():
     with open("config.json") as f:
         return json.load(f)
