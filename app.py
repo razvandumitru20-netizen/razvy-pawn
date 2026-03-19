@@ -15,13 +15,12 @@ def save_config(cfg):
         json.dump(cfg, f)
 
 def get_gold_price():
-    url = "https://api.gold-api.com/price/XAU"
+    url = "https://api.gold-api.com/price/XAU/EUR"
     data = requests.get(url).json()
 
-    price_usd_per_ounce = data["price"]
-    usd_to_eur = 0.92
+    price_eur_per_ounce = data["price"]
 
-    return (price_usd_per_ounce * usd_to_eur) / 31.1035
+    return price_eur_per_ounce / 31.1035
 
 def get_eur_ron():
     url = "https://www.bnr.ro/nbrfxrates.xml"
