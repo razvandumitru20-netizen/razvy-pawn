@@ -1,4 +1,4 @@
 {
-    "discount": 0.16,
-    "password": "1234"
-  }
+  "discount_percent": 16,
+  "password": "1234"
+}
