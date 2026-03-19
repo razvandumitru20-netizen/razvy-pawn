@@ -16,27 +16,14 @@ def save_config(cfg):
         json.dump(cfg, f)
 
 def get_gold_price():
-    url = "https://www.kitco.com/charts/gold"
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
+    url = "https://api.gold-api.com/price/XAU"
+    response = requests.get(url)
+    data = response.json()
 
-    response = requests.get(url, headers=headers, timeout=15)
-    soup = BeautifulSoup(response.text, "html.parser")
+    price_per_ounce = data["price"]  # USD per ounce
+    price_per_gram = price_per_ounce / 31.1035
 
-    text = soup.get_text(" ", strip=True)
-
-    if "EUR/g" not in text:
-        raise Exception("Nu am găsit EUR/g pe pagina Kitco")
-
-    import re
-    match = re.search(r"([0-9]+(?:[.,][0-9]+)?)\s*EUR/g", text)
-
-    if not match:
-        raise Exception("Nu am găsit prețul aurului în EUR/g pe Kitco")
-
-    eur_per_gram = float(match.group(1).replace(",", "."))
-    return eur_per_gram
+    return price_per_gram
 def get_eur_ron():
     url = "https://www.bnr.ro/nbrfxrates.xml"
     response = requests.get(url)
