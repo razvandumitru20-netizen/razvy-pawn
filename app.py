@@ -70,17 +70,13 @@ def prices():
         "8K": round(final * 0.333, 2)
     })
 
-@app.route("/admin", methods=["GET", "POST"])
-def admin():
-    cfg = load_config()
+@app.route("/debug-kitco")
+def debug_kitco():
+    url = "https://www.kitco.com/charts/gold"
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
 
-    if request.method == "POST":
-        if request.form["password"] == cfg["password"]:
-            cfg["discount"] = float(request.form["discount"])
-            save_config(cfg)
-        return redirect("/admin")
+    response = requests.get(url, headers=headers, timeout=15)
 
-    return render_template("admin.html", discount=cfg["discount"])
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    return response.text[:5000]
