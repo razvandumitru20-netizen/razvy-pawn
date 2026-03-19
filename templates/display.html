@@ -1,44 +1,127 @@
 <!DOCTYPE html>
-<html>
+<html lang="ro">
 <head>
-    <title>Razvy Pawn - Pret Aur</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Razvy Pawn - Preț Aur</title>
     <style>
         body {
-            background: black;
-            color: gold;
-            font-family: Arial;
-            text-align: center;
-            font-size: 60px;
+            margin: 0;
+            background: #000;
+            color: #f2c94c;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        .price {
-            margin: 20px;
+        .wrap {
+            width: 100%;
+            max-width: 1400px;
+            text-align: center;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        .title {
+            font-size: 90px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            color: #ffd700;
+        }
+
+        .subtitle {
+            font-size: 44px;
+            color: #ffffff;
+            margin-bottom: 50px;
+        }
+
+        .prices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #111;
+            border: 3px solid #f2c94c;
+            border-radius: 24px;
+            padding: 35px 20px;
+            box-shadow: 0 0 18px rgba(242, 201, 76, 0.2);
+        }
+
+        .karat {
+            font-size: 52px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .value {
+            font-size: 72px;
+            font-weight: 900;
+            color: #ffd700;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 28px;
+            color: #ccc;
+        }
+
+        @media (max-width: 1000px) {
+            .title { font-size: 64px; }
+            .subtitle { font-size: 30px; }
+            .prices { grid-template-columns: 1fr; }
+            .karat { font-size: 42px; }
+            .value { font-size: 56px; }
         }
     </style>
 </head>
 <body>
+    <div class="wrap">
+        <div class="title">RAZVY PAWN</div>
+        <div class="subtitle">PREȚ AUR AZI</div>
 
-<h1>RAZVY PAWN</h1>
+        <div class="prices">
+            <div class="card">
+                <div class="karat">24K</div>
+                <div class="value" id="p24">...</div>
+            </div>
+            <div class="card">
+                <div class="karat">18K</div>
+                <div class="value" id="p18">...</div>
+            </div>
+            <div class="card">
+                <div class="karat">14K</div>
+                <div class="value" id="p14">...</div>
+            </div>
+            <div class="card">
+                <div class="karat">8K</div>
+                <div class="value" id="p8">...</div>
+            </div>
+        </div>
 
-<div class="price" id="p24"></div>
-<div class="price" id="p18"></div>
-<div class="price" id="p14"></div>
-<div class="price" id="p8"></div>
+        <div class="footer">Actualizare automată la 10 minute</div>
+    </div>
 
-<script>
-async function loadPrices() {
-    const res = await fetch('/prices');
-    const data = await res.json();
+    <script>
+        async function loadPrices() {
+            const res = await fetch('/prices');
+            const data = await res.json();
 
-    document.getElementById('p24').innerText = "24K: " + data["24K"] + " RON";
-    document.getElementById('p18').innerText = "18K: " + data["18K"] + " RON";
-    document.getElementById('p14').innerText = "14K: " + data["14K"] + " RON";
-    document.getElementById('p8').innerText = "8K: " + data["8K"] + " RON";
-}
+            document.getElementById('p24').innerText = data["24K"] + " RON";
+            document.getElementById('p18').innerText = data["18K"] + " RON";
+            document.getElementById('p14').innerText = data["14K"] + " RON";
+            document.getElementById('p8').innerText = data["8K"] + " RON";
+        }
 
-loadPrices();
-setInterval(loadPrices, 600000); // 10 minute
-</script>
-
+        loadPrices();
+        setInterval(loadPrices, 600000);
+    </script>
 </body>
 </html>
