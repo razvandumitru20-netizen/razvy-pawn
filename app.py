@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, jsonify
 import requests, json, os
 import xml.etree.ElementTree as ET
+from bs4 import BeautifulSoup
 app = Flask(__name__)
 
 @app.route("/")
@@ -15,21 +16,27 @@ def save_config(cfg):
         json.dump(cfg, f)
 
 def get_gold_price():
-    # 1. preț aur USD
-    gold_url = "https://api.gold-api.com/price/XAU"
-    gold_data = requests.get(gold_url).json()
-    price_usd_per_ounce = gold_data["price"]
+    url = "https://www.kitco.com/charts/gold"
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
 
-    # 2. curs USD → EUR real
-    fx_url = "https://api.exchangerate.host/latest?base=USD&symbols=EUR"
-    fx_data = requests.get(fx_url).json()
-    usd_to_eur = fx_data["rates"]["EUR"]
+    response = requests.get(url, headers=headers, timeout=15)
+    soup = BeautifulSoup(response.text, "html.parser")
 
-    # 3. transformare în EUR / gram
-    price_eur_per_gram = (price_usd_per_ounce * usd_to_eur) / 31.1035
+    text = soup.get_text(" ", strip=True)
 
-    return price_eur_per_gram
+    if "EUR/g" not in text:
+        raise Exception("Nu am găsit EUR/g pe pagina Kitco")
 
+    import re
+    match = re.search(r"([0-9]+(?:[.,][0-9]+)?)\s*EUR/g", text)
+
+    if not match:
+        raise Exception("Nu am găsit prețul aurului în EUR/g pe Kitco")
+
+    eur_per_gram = float(match.group(1).replace(",", "."))
+    return eur_per_gram
 def get_eur_ron():
     url = "https://www.bnr.ro/nbrfxrates.xml"
     response = requests.get(url)
