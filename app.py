@@ -43,8 +43,8 @@ def prices():
     cfg = load_config()
     discount = cfg["discount_percent"] / 100
 
-    eur = get_gold_price()
-    ron = get_eur_ron()
+    usd = get_gold_price()
+    ron = get_usd_ron()
 
     base = eur * ron
     final = base * (1 - discount)
