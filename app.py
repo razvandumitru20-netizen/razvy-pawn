@@ -22,9 +22,15 @@ def get_gold_price():
     return (price_usd_per_ounce * usd_to_eur) / 31.1035
 
 def get_eur_ron():
-    url = "https://api.exchangerate.host/latest?base=EUR&symbols=RON"
-    data = requests.get(url).json()
-    return data['rates']['RON']
+    url = "https://www.bnr.ro/nbrfxrates.xml"
+    response = requests.get(url)
+    root = ET.fromstring(response.content)
+
+    for rate in root.iter():
+        if rate.tag.endswith("Rate") and rate.attrib.get("currency") == "EUR":
+            return float(rate.text)
+
+    raise Exception("Nu am găsit cursul EUR în XML-ul BNR")
 
 @app.route("/display")
 def display():
