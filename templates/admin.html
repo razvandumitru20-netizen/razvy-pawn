@@ -1,17 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Admin Razvy Pawn</title>
+    <title>Admin Razvy Pawn</title>
 </head>
-<body style="font-family: Arial, sans-serif; text-align:center; margin-top:100px;">
+<body style="background:black; color:gold; font-family:Arial; text-align:center;">
 
-<h2>Admin Razvy Pawn</h2>
+<h1>ADMIN PROCENTE</h1>
 
 <form method="POST">
     <input type="password" name="password" placeholder="Parola"><br><br>
-    <input type="number" step="0.01" name="discount"><br><br>
-    <button type="submit">Salvează</button>
+
+    24K %:<br>
+    <input type="number" step="0.1" name="d24" value="{{ cfg.discount_24k }}"><br><br>
+
+    18K %:<br>
+    <input type="number" step="0.1" name="d18" value="{{ cfg.discount_18k }}"><br><br>
+
+    14K %:<br>
+    <input type="number" step="0.1" name="d14" value="{{ cfg.discount_14k }}"><br><br>
+
+    8K %:<br>
+    <input type="number" step="0.1" name="d8" value="{{ cfg.discount_8k }}"><br><br>
+
+    <button type="submit">Salveaza</button>
 </form>
 
 </body>
