@@ -51,24 +51,24 @@ def display():
 
 @app.route("/prices")
 def prices():
-   cfg = load_config()
+    cfg = load_config()
 
-usd_per_gram = get_gold_price()
-usd_ron = get_usd_ron()
+    usd_per_gram = get_gold_price()
+    usd_ron = get_usd_ron()
 
-base = usd_per_gram * usd_ron
+    base = usd_per_gram * usd_ron
 
-d24 = cfg["discount_24k"] / 100
-d18 = cfg["discount_18k"] / 100
-d14 = cfg["discount_14k"] / 100
-d8  = cfg["discount_8k"] / 100
+    d24 = cfg["discount_24k"] / 100
+    d18 = cfg["discount_18k"] / 100
+    d14 = cfg["discount_14k"] / 100
+    d8 = cfg["discount_8k"] / 100
 
-return jsonify({
-    "24K": round(base * (1 - d24), 2),
-    "18K": round(base * 0.75 * (1 - d18), 2),
-    "14K": round(base * 0.585 * (1 - d14), 2),
-    "8K": round(base * 0.333 * (1 - d8), 2)
-})
+    return jsonify({
+        "24K": round(base * (1 - d24), 2),
+        "18K": round(base * 0.75 * (1 - d18), 2),
+        "14K": round(base * 0.585 * (1 - d14), 2),
+        "8K": round(base * 0.333 * (1 - d8), 2)
+    })
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
